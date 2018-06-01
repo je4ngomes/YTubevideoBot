@@ -1,12 +1,14 @@
 const Telegraf = require('telegraf');
 
-const handler = require('./handler');
+require('../config/env').config(__dirname + './../.env');
+const { textHandler } = require('./textHandler');
+const { inlineQuery } = require('./inlineHandler');
 
-process.env.BOT_TOKEN = '428427082:AAE3-Y8XFRb4UXXJLcLwa2oFvDAxNnEzZJo';
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
-bot.start(ctx => ctx.reply('Send me a youtube link and i will send you the audio file.'));
-bot.on('text', handler);
 
+bot.start(ctx => ctx.reply('Send me a youtube link and i will send you the audio file.'));
+bot.on('text', textHandler);
+bot.on('inline_query', inlineQuery);
 
 bot.startPolling();

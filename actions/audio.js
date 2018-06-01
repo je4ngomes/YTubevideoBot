@@ -2,38 +2,47 @@ const fs = require('fs');
 const ytdl = require('ytdl-core');
 const path = require('path');
 
-const TMP_FILE = path.join(__dirname,'../tmp/audio.mp3');
-const renameTo = info => {
-    fs.renameSync(TMP_FILE, path.join(__dirname, `../tmp/${info.title}.mp3`));
-    return info;
-};
+const { joinPath } = require('../utils/utils');
 
-const fetchAudio = url => {
-    console.log('a')
+const fetchSingleAudio = ({ url, filename }) => {
     return new Promise((resolve, reject) => {
         ytdl(url, {quality: "highestaudio",  filter: 'audioonly'})
-            .pipe(fs.createWriteStream(TMP_FILE))
+            .pipe(fs.createWriteStream(joinPath(`../tmp/${filename}.mp3`)))
             .on('error', _ => reject({msg: 'Something went wrong. Please try again.'}))            
             .on('finish', () => {
-                ytdl.getInfo(url)
-                    .then(renameTo)
-                    .then(info => resolve(path.join(__dirname, `../tmp/${info.title}.mp3`)));
+                resolve(joinPath(`../tmp/${filename}.mp3`));
             });
     });   
 };
 
-const deleteAudio = (filename) => fs.unlinkSync(filename);
-const sendAudio = (ctx) => {
+const fetchMultiAudio = targets => 
+    Promise.all(
+        targets.map(async target => 
+            ({...target, audio_url: fs.createReadStream(await fetchSingleAudio({ url: target.audio_url, filename: target.title }))})
+    ));
+
+const deleteAudio = () => {
+    console.log(joinPath('../tmp/'));
+    fs.readdirSync(joinPath('../tmp/'))
+        .map(file => fs.unlinkSync(joinPath(`../tmp/${file}`)));
+    }
+const sendAudio = ctx => {
     return (filename) => {       
         ctx.replyWithAudio({source: filename}, {
             reply_to_message_id: ctx.message.message_id
         });
-        return filename;
     };
 };
+
+const audioInfo = url => 
+    ytdl.getInfo(url)
+        .then(info => ({url: info.video_url, filename: info.title}));
+
 
 module.exports = {
     deleteAudio,
     sendAudio,
-    fetchAudio
+    audioInfo,
+    fetchSingleAudio,
+    fetchMultiAudio
 };
