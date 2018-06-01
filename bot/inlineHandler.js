@@ -1,15 +1,12 @@
-const { searchVideo } = require('../ytApi/api');
+const { searchVideo } = require('../models/youtube');
 const { formatResults } = require('../actions/inline');
-const { fetchMultiAudio } = require('../actions/audio');
-
 
 const inlineQuery = ({ inlineQuery, answerInlineQuery }) => {
-    searchVideo(inlineQuery.query, 4)
+    searchVideo(inlineQuery.query, 5)
         .then(formatResults)
-        .then(fetchMultiAudio)
         .then(answerInlineQuery)
         .catch(_ => {
-            console.log(_);
+            throw 'inline Error';
         });
 };
 

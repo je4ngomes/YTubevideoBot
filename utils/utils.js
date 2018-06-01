@@ -1,8 +1,6 @@
-const path = require('path');
+const randomId = () => '_' + Math.random().toString(36).substr(2, 9);
 
-
-const joinPath = filename => path.join(__dirname, filename);
 
 module.exports = {
-    joinPath
+    randomId
 };
