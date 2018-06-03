@@ -47,7 +47,7 @@ const configEnvVar = {
     _state: null,
     _entries: [],
     _data: null
-};
+}; 
 
 module.exports.config = (dirname) => {
     process.env = configEnvVar
