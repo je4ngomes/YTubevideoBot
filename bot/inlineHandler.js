@@ -6,7 +6,6 @@ const inlineQuery = ({ inlineQuery, answerInlineQuery }) => {
         .then(formatResults)
         .then(answerInlineQuery)
         .catch(_ => {
-
             throw 'inline Error';
         });
 };
