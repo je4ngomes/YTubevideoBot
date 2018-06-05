@@ -5,9 +5,7 @@ const inlineQuery = ({ inlineQuery, answerInlineQuery }) => {
     searchVideo(inlineQuery.query, 5)
         .then(formatResults)
         .then(answerInlineQuery)
-        .catch(_ => {
-            throw 'inline Error';
-        });
+        .catch(_ => console.error(_));
 };
 
 module.exports = {
