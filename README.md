@@ -2,7 +2,7 @@
 
 Bot: [@YTubevideobot](https://telegram.me/YTubevideobot)
 
-This bot will help you find and share any video from youtube.
+This is a telegram bot created to help you find and share any video from youtube.
 
 
 # Usage
